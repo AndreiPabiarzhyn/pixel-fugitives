@@ -87,45 +87,72 @@
   .sec-title{font-size:19px;font-weight:900;color:var(--text);flex:1}
   .sec-hint{font-size:13px;color:var(--text-muted);margin-bottom:14px;line-height:1.5}
 
-  /* creatures */
-  .clist{display:flex;flex-direction:column;gap:11px}
+  /* creatures grid */
+  .clist{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-items:start}
+  @media(max-width:560px){.clist{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:360px){.clist{grid-template-columns:1fr}}
+
+  /* open card */
   .cc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
-    padding:16px;animation:slideIn .22s ease;transition:border-color .2s}
+    padding:14px;animation:slideIn .22s ease;transition:border-color .2s}
   .cc:focus-within{border-color:var(--border-hi)}
-  @keyframes slideIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
-  .cc-head{display:flex;align-items:center;gap:8px;margin-bottom:13px}
-  .cnum{width:26px;height:26px;border-radius:7px;background:var(--accent-dim);
+  @keyframes slideIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
+  .cc-head{display:flex;align-items:center;gap:7px;margin-bottom:11px}
+  .cnum{width:24px;height:24px;border-radius:7px;background:var(--accent-dim);
     border:1px solid var(--accent-border);color:var(--violet);
-    font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-  .clabel{font-size:13px;font-weight:700;color:var(--text-muted);flex:1}
+    font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .clabel{font-size:12px;font-weight:700;color:var(--text-muted);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .rm-btn{background:none;border:none;color:var(--text-dim);cursor:pointer;
-    font-size:16px;padding:3px 7px;border-radius:5px;transition:color .18s;line-height:1}
+    font-size:15px;padding:2px 5px;border-radius:5px;transition:color .18s;line-height:1;flex-shrink:0}
   .rm-btn:hover{color:var(--danger)}
-  .fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  @media(max-width:480px){.fields{grid-template-columns:1fr}}
-  .fg{display:flex;flex-direction:column;gap:5px}
-  .fg label{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em}
+
+  /* fields — always single column inside narrow grid cards */
+  .fields{display:flex;flex-direction:column;gap:9px}
+  .fg{display:flex;flex-direction:column;gap:4px}
+  .fg label{font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em}
   .fg input[type=text]{
     background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);
-    padding:9px 12px;color:var(--text);font-family:var(--font);font-size:14px;font-weight:600;
+    padding:8px 10px;color:var(--text);font-family:var(--font);font-size:13px;font-weight:600;
     transition:border-color .18s;width:100%;
   }
   .fg input[type=text]:focus{outline:none;border-color:var(--border-hi)}
   .fg input[type=text]::placeholder{color:var(--text-dim)}
-  .fg-file{grid-column:1/-1}
   .file-wrap{display:flex;align-items:center;background:var(--surface2);
     border:1px solid var(--border);border-radius:var(--rs);overflow:hidden;transition:border-color .18s}
   .file-wrap:focus-within{border-color:var(--border-hi)}
-  .file-wrap input{background:none;border:none;flex:1;padding:9px 12px;
-    color:var(--text);font-family:var(--mono);font-size:13px;min-width:0}
+  .file-wrap input{background:none;border:none;flex:1;padding:8px 10px;
+    color:var(--text);font-family:var(--mono);font-size:12px;min-width:0}
   .file-wrap input:focus{outline:none}
   .file-wrap input::placeholder{color:var(--text-dim);font-family:var(--mono)}
-  .file-ext{padding:9px 12px 9px 0;color:var(--violet);font-family:var(--mono);font-size:13px;flex-shrink:0}
-  .add-btn{width:100%;margin-top:12px;padding:13px;background:none;
-    border:1.5px dashed var(--border);border-radius:var(--r);color:var(--violet);
-    font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;transition:all .2s}
-  .add-btn:hover:not(:disabled){border-color:var(--accent);background:var(--accent-dim)}
-  .add-btn:disabled{opacity:.35;cursor:not-allowed}
+  .file-ext{padding:8px 10px 8px 0;color:var(--violet);font-family:var(--mono);font-size:12px;flex-shrink:0}
+
+  /* closed/locked card slot */
+  .cc-closed{
+    background:var(--surface);border:2px dashed var(--border);border-radius:var(--r);
+    min-height:110px;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;transition:all .2s;animation:slideIn .22s ease;
+  }
+  .cc-closed:hover{border-color:var(--violet);background:var(--accent-dim)}
+  .cc-closed:hover .cc-plus-ring{border-color:var(--violet);background:rgba(167,139,250,.18)}
+  .cc-plus-ring{
+    width:42px;height:42px;border-radius:50%;
+    border:2px solid var(--border);background:var(--surface2);
+    display:flex;align-items:center;justify-content:center;
+    transition:all .2s;
+  }
+  .cc-plus-icon{color:var(--text-dim);font-size:22px;line-height:1;transition:color .2s;user-select:none}
+  .cc-closed:hover .cc-plus-icon{color:var(--violet)}
+
+  /* add button — bright */
+  .add-btn{
+    width:100%;margin-top:14px;padding:15px;
+    background:var(--accent);border:none;border-radius:var(--r);
+    color:#fff;font-family:var(--font);font-size:16px;font-weight:800;
+    cursor:pointer;transition:background .18s,transform .12s;letter-spacing:.02em;
+  }
+  .add-btn:hover:not(:disabled){background:#4f46e5}
+  .add-btn:active:not(:disabled){transform:scale(.99)}
+  .add-btn:disabled{opacity:.4;cursor:not-allowed;background:var(--surface2);color:var(--text-muted)}
 
   /* background presets */
   .bg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
@@ -627,7 +654,13 @@ ${n} shuffled pairs. Card back — cover.png from Files. CSS 3D flip on click. T
 const LANG_ORDER=['RU','EN','ES','ID','IT','TR','PL','PT','AR'];
 
 // ── State ──────────────────────────────────────────────────────
-let st={lang:'RU',creatures:[{n:'',t:'',f:'',auto:true}],bg:'stars',custText:''};
+const INIT_SLOTS=5;
+function makeSlot(open=false){return{n:'',t:'',f:'',auto:true,open};}
+let st={
+  lang:'RU',
+  creatures:Array.from({length:INIT_SLOTS},(_,i)=>makeSlot(i===0)),
+  bg:'stars',custText:''
+};
 let userEdited=false;
 
 // ── Lang ───────────────────────────────────────────────────────
@@ -659,27 +692,36 @@ function renderAll(){
 
 function renderCreatures(){
   const t=T[st.lang];
-  document.getElementById('cList').innerHTML=st.creatures.map((c,i)=>`
-    <div class="cc">
+  document.getElementById('cList').innerHTML=st.creatures.map((c,i)=>{
+    const num=i+1;
+    if(!c.open){
+      return`<button class="cc-closed" onclick="openC(${i})" aria-label="${esc(t.cLbl(num))}">
+        <div class="cc-plus-ring"><span class="cc-plus-icon">+</span></div>
+      </button>`;
+    }
+    const canClose=st.creatures.filter(x=>x.open).length>1||i>=INIT_SLOTS;
+    return`<div class="cc">
       <div class="cc-head">
-        <div class="cnum">${i+1}</div>
-        <div class="clabel">${t.cLbl(i+1)}</div>
-        ${st.creatures.length>1?`<button class="rm-btn" onclick="rmC(${i})">&#10005;</button>`:''}
+        <div class="cnum">${num}</div>
+        <div class="clabel">${t.cLbl(num)}</div>
+        ${canClose||i>=INIT_SLOTS?`<button class="rm-btn" onclick="closeC(${i})" title="&#10005;">&#10005;</button>`:''}
       </div>
       <div class="fields">
         <div class="fg"><label>${t.nameLbl}</label>
           <input type="text" placeholder="${esc(t.namePh)}" value="${esc(c.n)}" oninput="upC(${i},'n',this.value)"></div>
         <div class="fg"><label>${t.traitLbl}</label>
           <input type="text" placeholder="${esc(t.traitPh)}" value="${esc(c.t)}" oninput="upC(${i},'t',this.value)"></div>
-        <div class="fg fg-file"><label>${t.fileLbl}</label>
+        <div class="fg"><label>${t.fileLbl}</label>
           <div class="file-wrap">
             <input type="text" id="fi${i}" placeholder="${esc(t.filePh)}" value="${esc(c.f)}" oninput="upFile(${i},this.value)">
             <span class="file-ext">.png</span>
           </div></div>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
   const ab=document.getElementById('addBtn');
-  ab.textContent=t.addBtn;ab.disabled=st.creatures.length>=5;
+  ab.textContent=t.addBtn;
+  ab.disabled=false; // always allow adding beyond 5
 }
 
 function renderBg(){
@@ -704,13 +746,33 @@ function upC(i,k,v){
     const s=slug(v);st.creatures[i].f=s;
     const el=document.getElementById(`fi${i}`);if(el)el.value=s;
   }
-  userEdited=false; // form changed → auto-regenerate
-  showReset(false);
-  go();
+  userEdited=false;showReset(false);go();
 }
 function upFile(i,v){st.creatures[i].f=v;st.creatures[i].auto=false;go();}
-function addC(){if(st.creatures.length<5){st.creatures.push({n:'',t:'',f:'',auto:true});renderCreatures();go();}}
-function rmC(i){st.creatures.splice(i,1);renderCreatures();go();}
+
+function openC(i){st.creatures[i].open=true;renderCreatures();}
+
+function closeC(i){
+  if(i>=INIT_SLOTS){
+    // extra cards — remove entirely
+    st.creatures.splice(i,1);
+  }else{
+    // original 5 — reset & close
+    st.creatures[i]=makeSlot(false);
+  }
+  renderCreatures();go();
+}
+
+function addC(){
+  st.creatures.push(makeSlot(true));
+  renderCreatures();
+  // scroll new card into view
+  setTimeout(()=>{
+    const cards=document.querySelectorAll('#cList > *');
+    if(cards.length)cards[cards.length-1].scrollIntoView({behavior:'smooth',block:'nearest'});
+  },80);
+}
+
 function setBg(id){st.bg=id;renderBg();userEdited=false;showReset(false);go();}
 
 // ── Prompt generation ──────────────────────────────────────────
