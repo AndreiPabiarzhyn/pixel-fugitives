@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fugitive Gallery</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:     #070b14;
+  --card:   #0e1525;
+  --card2:  #111a2e;
+  --border: rgba(255,255,255,0.09);
+  --text:   #eef2ff;
+  --muted:  #5a6a90;
+  --mono:   'Consolas','SF Mono',monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ─── HEADER ─── */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 40px;
+  border-bottom: 1px solid var(--border);
+}
+.h-brand { display: flex; align-items: center; gap: 12px; }
+.h-icon  { font-size: 1.5rem; filter: drop-shadow(0 0 8px rgba(251,191,36,.6)); }
+.h-title { font-size: 1.1rem; font-weight: 900; color: #fff; letter-spacing: -.02em; }
+.h-sub   { font-size: 0.68rem; color: var(--muted); font-family: var(--mono); letter-spacing: .06em; margin-top: 1px; }
+.h-tag {
+  font-family: var(--mono);
+  font-size: 0.62rem; letter-spacing: .14em;
+  color: #fbbf24;
+  border: 1px solid rgba(251,191,36,.35);
+  border-radius: 4px;
+  padding: 4px 12px;
+}
+
+/* ─── GALLERY SECTION ─── */
+.gallery-section { padding: 36px 40px 28px; }
+
+.section-head {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 24px;
+}
+.section-head h2 {
+  font-size: 1.35rem; font-weight: 900;
+  color: #fff; letter-spacing: -.02em;
+}
+.section-head span {
+  font-family: var(--mono); font-size: .62rem;
+  color: var(--muted); letter-spacing: .12em;
+}
+.section-line { flex: 1; height: 1px; background: var(--border); }
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+}
+
+/* ─── FLIP CARD ─── */
+.flip-card {
+  height: 210px;
+  perspective: 900px;
+  cursor: pointer;
+}
+.flip-inner {
+  width: 100%; height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform .5s cubic-bezier(.4,0,.2,1);
+  border-radius: 16px;
+}
+.flip-card.open .flip-inner { transform: rotateY(180deg); }
+
+.flip-front, .flip-back {
+  position: absolute; inset: 0;
+  border-radius: 16px;
+  backface-visibility: hidden;
+  display: flex; flex-direction: column; align-items: center;
+  overflow: hidden;
+  border: 1.5px solid var(--border);
+}
+
+/* FRONT */
+.flip-front {
+  background: var(--card);
+  justify-content: center; gap: 12px;
+  padding: 20px 14px;
+  transition: border-color .2s, box-shadow .2s;
+}
+.flip-card:hover .flip-front {
+  border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+  box-shadow: 0 0 28px -6px var(--accent);
+}
+.flip-front img {
+  image-rendering: pixelated;
+  width: 84px; height: 84px;
+  filter: drop-shadow(0 0 12px var(--accent));
+  transition: transform .25s;
+}
+.flip-card:hover .flip-front img { transform: scale(1.1) translateY(-3px); }
+.card-name {
+  font-size: 1.2rem; font-weight: 900;
+  color: #fff; letter-spacing: -.01em;
+}
+.card-hint {
+  font-size: 0.65rem; font-family: var(--mono);
+  color: var(--muted); letter-spacing: .1em;
+}
+
+/* BACK */
+.flip-back {
+  background: var(--card);
+  transform: rotateY(180deg);
+  justify-content: flex-start;
+  border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.back-bar {
+  width: 100%; padding: 10px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+}
+.back-id {
+  font-family: var(--mono); font-size: .58rem;
+  letter-spacing: .1em; color: var(--accent);
+}
+.pulse {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 7px var(--accent);
+  animation: blink 2s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+.back-content {
+  padding: 14px 16px; width: 100%;
+  display: flex; flex-direction: column; gap: 10px; flex: 1;
+}
+.back-name   { font-size: 1.1rem; font-weight: 900; color: var(--accent); }
+.field-lbl   { font-family: var(--mono); font-size: .55rem; letter-spacing: .12em; color: var(--muted); margin-bottom: 2px; }
+.field-val   { font-size: .8rem; font-weight: 800; color: var(--text); }
+.threat-row  { display: flex; gap: 5px; }
+.td { width: 10px; height: 10px; border-radius: 50%; }
+.td.on  { background: var(--accent); box-shadow: 0 0 5px var(--accent); }
+.td.off { background: rgba(255,255,255,.1); }
+.back-trait {
+  margin-top: auto;
+  font-size: .76rem; font-weight: 700;
+  color: rgba(255,255,255,.45); font-style: italic;
+  line-height: 1.5;
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+
+/* creature colours */
+[data-c="cyan"]   { --accent: #22d3ee; }
+[data-c="lime"]   { --accent: #4ade80; }
+[data-c="violet"] { --accent: #a78bfa; }
+[data-c="pink"]   { --accent: #f472b6; }
+[data-c="amber"]  { --accent: #fb923c; }
+
+/* ─── GAME SECTION ─── */
+.game-section {
+  margin: 0 0 48px;
+  padding: 32px 40px;
+  background: linear-gradient(180deg, rgba(99,102,241,.06) 0%, transparent 100%);
+  border-top: 1px solid rgba(99,102,241,.2);
+  border-bottom: 1px solid rgba(99,102,241,.1);
+}
+
+.game-head {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 6px;
+}
+.game-head h2 {
+  font-size: 1.35rem; font-weight: 900;
+  color: #fff; letter-spacing: -.02em;
+}
+.game-head .section-line { flex: 1; height: 1px; background: rgba(99,102,241,.25); }
+
+.game-meta {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+.game-sub  { font-size: .85rem; font-weight: 700; color: var(--muted); }
+#score-badge {
+  font-family: var(--mono); font-size: .72rem; font-weight: 700;
+  color: #818cf8;
+  background: rgba(129,140,248,.1);
+  border: 1px solid rgba(129,140,248,.3);
+  border-radius: 20px;
+  padding: 5px 16px; letter-spacing: .05em;
+  transition: all .3s;
+}
+#score-badge.done {
+  color: #4ade80;
+  background: rgba(74,222,128,.1);
+  border-color: rgba(74,222,128,.35);
+}
+
+/* GAME GRID — fixed square cards */
+.mem-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 120px);
+  grid-template-rows: repeat(2, 120px);
+  gap: 12px;
+  justify-content: center;
+}
+
+.mc {
+  width: 120px; height: 120px;
+  cursor: pointer; perspective: 700px;
+}
+.mc-inner {
+  width: 100%; height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform .38s cubic-bezier(.4,0,.2,1);
+  border-radius: 14px;
+}
+.mc.on  .mc-inner { transform: rotateY(180deg); }
+.mc.hit .mc-inner { transform: rotateY(180deg); }
+
+.mc-back, .mc-face {
+  position: absolute; inset: 0;
+  border-radius: 14px;
+  backface-visibility: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.mc-back {
+  background: var(--card2);
+  border: 1.5px solid rgba(99,102,241,.2);
+  cursor: pointer;
+  transition: border-color .2s, box-shadow .2s;
+  background-image:
+    linear-gradient(rgba(99,102,241,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99,102,241,.04) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+.mc:not(.on):not(.hit):hover .mc-back {
+  border-color: rgba(251,191,36,.5);
+  box-shadow: 0 0 20px -4px rgba(251,191,36,.3);
+}
+.mc-back .q {
+  font-size: 1.8rem; font-weight: 900;
+  color: rgba(99,102,241,.25);
+  user-select: none;
+}
+
+.mc-face {
+  background: var(--card);
+  border: 1.5px solid rgba(255,255,255,.15);
+  transform: rotateY(180deg);
+}
+.mc-face img {
+  image-rendering: pixelated;
+  width: 65%; height: 65%;
+}
+.mc.hit .mc-face {
+  border-color: rgba(74,222,128,.5);
+  background: rgba(74,222,128,.07);
+  box-shadow: 0 0 22px -4px rgba(74,222,128,.45);
+  animation: pop .3s ease;
+}
+@keyframes pop {
+  0%   { transform: rotateY(180deg) scale(1); }
+  50%  { transform: rotateY(180deg) scale(1.12); }
+  100% { transform: rotateY(180deg) scale(1); }
+}
+
+/* win + controls */
+#win-msg {
+  display: none;
+  margin-top: 22px;
+  padding: 16px 24px;
+  border-radius: 12px;
+  background: rgba(74,222,128,.08);
+  border: 1px solid rgba(74,222,128,.3);
+  font-size: 1.05rem; font-weight: 900;
+  color: #4ade80; text-align: center;
+  animation: fadeUp .4s ease;
+}
+@keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+
+.game-footer { margin-top: 18px; }
+#restart {
+  padding: 9px 20px;
+  font-family: 'Nunito', sans-serif;
+  font-size: .82rem; font-weight: 800;
+  color: var(--muted);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: transparent; cursor: pointer;
+  transition: all .2s;
+}
+#restart:hover {
+  color: var(--text);
+  border-color: rgba(255,255,255,.22);
+  background: rgba(255,255,255,.04);
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="h-brand">
+    <div class="h-icon">📂</div>
+    <div>
+      <div class="h-title">Fugitive Gallery</div>
+      <div class="h-sub">Council of Creators · Reference Build</div>
+    </div>
+  </div>
+  <div class="h-tag">⬤ CLASSIFIED</div>
+</header>
+
+<!-- GALLERY -->
+<section class="gallery-section">
+  <div class="section-head">
+    <h2>📋 Dossier</h2>
+    <span>5 fugitives on file</span>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="gallery">
+
+    <div class="flip-card" data-c="cyan" onclick="this.classList.toggle('open')">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <img src="zubrik.png" alt="Spiky">
+          <div class="card-name">Spiky</div>
+          <div class="card-hint">tap to open file</div>
+        </div>
+        <div class="flip-back">
+          <div class="back-bar"><span class="back-id">FILE #001</span><span class="pulse"></span></div>
+          <div class="back-content">
+            <div class="back-name">Spiky</div>
+            <div><div class="field-lbl">Origin</div><div class="field-val">Underwater World 🌊</div></div>
+            <div><div class="field-lbl">Threat</div>
+              <div class="threat-row">
+                <div class="td on"></div><div class="td off"></div><div class="td off"></div><div class="td off"></div><div class="td off"></div>
+              </div>
+            </div>
+            <div class="back-trait">"squeaks when scared — is scared of almost everything"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flip-card" data-c="lime" onclick="this.classList.toggle('open')">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <img src="mshan.png" alt="Shroomy">
+          <div class="card-name">Shroomy</div>
+          <div class="card-hint">tap to open file</div>
+        </div>
+        <div class="flip-back">
+          <div class="back-bar"><span class="back-id">FILE #002</span><span class="pulse"></span></div>
+          <div class="back-content">
+            <div class="back-name">Shroomy</div>
+            <div><div class="field-lbl">Origin</div><div class="field-val">Forest World 🌲</div></div>
+            <div><div class="field-lbl">Threat</div>
+              <div class="threat-row">
+                <div class="td on"></div><div class="td on"></div><div class="td off"></div><div class="td off"></div><div class="td off"></div>
+              </div>
+            </div>
+            <div class="back-trait">"collects strangers' hats — nobody knows why"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flip-card" data-c="violet" onclick="this.classList.toggle('open')">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <img src="svetik.png" alt="Glimmer">
+          <div class="card-name">Glimmer</div>
+          <div class="card-hint">tap to open file</div>
+        </div>
+        <div class="flip-back">
+          <div class="back-bar"><span class="back-id">FILE #003</span><span class="pulse"></span></div>
+          <div class="back-content">
+            <div class="back-name">Glimmer</div>
+            <div><div class="field-lbl">Origin</div><div class="field-val">Space World 🌙</div></div>
+            <div><div class="field-lbl">Threat</div>
+              <div class="threat-row">
+                <div class="td on"></div><div class="td on"></div><div class="td on"></div><div class="td off"></div><div class="td off"></div>
+              </div>
+            </div>
+            <div class="back-trait">"glows brighter when it lies"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flip-card" data-c="pink" onclick="this.classList.toggle('open')">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <img src="puzyr.png" alt="Bloop">
+          <div class="card-name">Bloop</div>
+          <div class="card-hint">tap to open file</div>
+        </div>
+        <div class="flip-back">
+          <div class="back-bar"><span class="back-id">FILE #004</span><span class="pulse"></span></div>
+          <div class="back-content">
+            <div class="back-name">Bloop</div>
+            <div><div class="field-lbl">Origin</div><div class="field-val">Magic World 🔮</div></div>
+            <div><div class="field-lbl">Threat</div>
+              <div class="threat-row">
+                <div class="td on"></div><div class="td on"></div><div class="td off"></div><div class="td off"></div><div class="td off"></div>
+              </div>
+            </div>
+            <div class="back-trait">"always expects to be popped — but nobody dares"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flip-card" data-c="amber" onclick="this.classList.toggle('open')">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <img src="kranchik.png" alt="Bolty">
+          <div class="card-name">Bolty</div>
+          <div class="card-hint">tap to open file</div>
+        </div>
+        <div class="flip-back">
+          <div class="back-bar"><span class="back-id">FILE #005</span><span class="pulse"></span></div>
+          <div class="back-content">
+            <div class="back-name">Bolty</div>
+            <div><div class="field-lbl">Origin</div><div class="field-val">Mechanical World ⚙️</div></div>
+            <div><div class="field-lbl">Threat</div>
+              <div class="threat-row">
+                <div class="td on"></div><div class="td on"></div><div class="td on"></div><div class="td on"></div><div class="td off"></div>
+              </div>
+            </div>
+            <div class="back-trait">"repairs itself — but differently each time"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- MEMORY GAME -->
+<section class="game-section">
+  <div class="game-head">
+    <h2>🧠 Memory Challenge</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="game-meta">
+    <div class="game-sub">Flip two cards — find all 5 matching pairs!</div>
+    <div id="score-badge">0 / 5 pairs found</div>
+  </div>
+
+  <div class="mem-grid" id="memGrid"></div>
+  <div id="win-msg">🎉 All fugitives identified! Great memory, Agent!</div>
+  <div class="game-footer">
+    <button id="restart" onclick="startGame()">↺ Shuffle &amp; play again</button>
+  </div>
+</section>
+
+<script>
+const CREATURES = [
+  {f:'zubrik.png',   n:'Spiky'  },
+  {f:'mshan.png',    n:'Shroomy'},
+  {f:'svetik.png',   n:'Glimmer'},
+  {f:'puzyr.png',    n:'Bloop'  },
+  {f:'kranchik.png', n:'Bolty'  },
+];
+
+let open=[], found=0, lock=false;
+
+function shuffle(a){ return [...a].sort(()=>Math.random()-.5); }
+
+function updateScore(){
+  const b=document.getElementById('score-badge');
+  b.textContent=`${found} / 5 pairs found`;
+  if(found===5) b.classList.add('done'); else b.classList.remove('done');
+}
+
+function startGame(){
+  open=[]; found=0; lock=false;
+  document.getElementById('win-msg').style.display='none';
+  updateScore();
+  const grid=document.getElementById('memGrid');
+  grid.innerHTML='';
+  shuffle([...CREATURES,...CREATURES]).forEach(c=>{
+    const el=document.createElement('div');
+    el.className='mc';
+    el.dataset.n=c.n;
+    el.innerHTML=`<div class="mc-inner">
+      <div class="mc-back"><div class="q">?</div></div>
+      <div class="mc-face"><img src="${c.f}" alt="${c.n}"></div>
+    </div>`;
+    el.addEventListener('click',()=>flip(el));
+    grid.appendChild(el);
+  });
+}
+
+function flip(card){
+  if(lock||card.classList.contains('on')||card.classList.contains('hit')) return;
+  card.classList.add('on');
+  open.push(card);
+  if(open.length<2) return;
+  lock=true;
+  const [a,b]=open;
+  if(a.dataset.n===b.dataset.n){
+    setTimeout(()=>{
+      a.classList.replace('on','hit');
+      b.classList.replace('on','hit');
+      open=[]; lock=false; found++;
+      updateScore();
+      if(found===5) setTimeout(()=>document.getElementById('win-msg').style.display='block',300);
+    },200);
+  } else {
+    setTimeout(()=>{ a.classList.remove('on'); b.classList.remove('on'); open=[]; lock=false; },850);
+  }
+}
+
+startGame();
+</script>
+</body>
+</html>
