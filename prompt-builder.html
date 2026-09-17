@@ -1,0 +1,631 @@
+<title>Дело беглецов</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg:#050a14; --surface:#0b1628; --surface2:#0f1f3a;
+    --accent:#6366f1; --accent-dim:rgba(99,102,241,.12); --accent-border:rgba(99,102,241,.28);
+    --violet:#a78bfa; --cyan:#22d3ee; --success:#10b981; --danger:#f87171;
+    --text:#e2e8f0; --text-muted:#7e96b5; --text-dim:#3d5270;
+    --border:rgba(99,102,241,.18); --border-hi:rgba(99,102,241,.42);
+    --r:14px; --rs:8px;
+    --font:'Nunito',system-ui,sans-serif;
+    --mono:'JetBrains Mono',monospace;
+  }
+  @media(prefers-color-scheme:light){
+    :root:not([data-theme="dark"]){
+      --bg:#f0f4ff; --surface:#fff; --surface2:#eef2fc;
+      --accent:#4f46e5; --accent-dim:rgba(79,70,229,.08); --accent-border:rgba(79,70,229,.2);
+      --violet:#7c3aed; --text:#1e293b; --text-muted:#5a6d8a; --text-dim:#9eafc5;
+      --border:rgba(79,70,229,.15); --border-hi:rgba(79,70,229,.38);
+    }
+  }
+  :root[data-theme="dark"]{--bg:#050a14;--surface:#0b1628;--surface2:#0f1f3a;--text:#e2e8f0;--text-muted:#7e96b5}
+
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:64px}
+
+  body::before{
+    content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:
+      radial-gradient(1px 1px at 8% 12%,rgba(255,255,255,.45) 0%,transparent 100%),
+      radial-gradient(1.5px 1.5px at 48% 7%,rgba(255,255,255,.3) 0%,transparent 100%),
+      radial-gradient(1px 1px at 78% 18%,rgba(255,255,255,.35) 0%,transparent 100%),
+      radial-gradient(1px 1px at 25% 55%,rgba(255,255,255,.2) 0%,transparent 100%),
+      radial-gradient(1.5px 1.5px at 62% 40%,rgba(167,139,250,.35) 0%,transparent 100%),
+      radial-gradient(1px 1px at 90% 62%,rgba(255,255,255,.25) 0%,transparent 100%),
+      radial-gradient(1px 1px at 14% 80%,rgba(255,255,255,.2) 0%,transparent 100%),
+      radial-gradient(1px 1px at 70% 78%,rgba(255,255,255,.15) 0%,transparent 100%);
+  }
+  @media(prefers-color-scheme:light){:root:not([data-theme="dark"]) body::before{display:none}}
+
+  .wrap{position:relative;max-width:700px;margin:0 auto;padding:0 16px;z-index:1}
+
+  /* lang bar */
+  .lang-bar{
+    position:sticky;top:env(safe-area-inset-top,0px);z-index:100;
+    background:var(--bg);border-bottom:1px solid var(--border);
+    padding:10px 16px;display:flex;gap:6px;flex-wrap:wrap;justify-content:center;
+  }
+  .lb{padding:4px 14px;border-radius:20px;border:1px solid var(--border);background:none;
+    color:var(--text-muted);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .18s;letter-spacing:.03em}
+  .lb:hover{border-color:var(--violet);color:var(--violet)}
+  .lb.on{background:var(--accent);border-color:var(--accent);color:#fff}
+
+  /* header */
+  .header{text-align:center;padding:36px 0 28px}
+  .header-ship{display:block;margin:0 auto 14px;width:60px;height:60px}
+  .header-badge{
+    display:inline-flex;align-items:center;gap:7px;
+    font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--cyan);
+    text-transform:uppercase;margin-bottom:14px;
+    border:1px solid rgba(34,211,238,.3);border-radius:20px;padding:4px 14px;
+  }
+  .header-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);
+    box-shadow:0 0 6px var(--cyan);animation:blink 1.4s ease-in-out infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+  .header h1{
+    font-size:clamp(26px,6vw,38px);font-weight:900;
+    background:linear-gradient(135deg,#818cf8 0%,#c4b5fd 50%,#67e8f9 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    margin-bottom:10px;text-wrap:balance;
+  }
+  .narrative{
+    font-size:14px;color:var(--text-muted);line-height:1.65;
+    max-width:480px;margin:0 auto;
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+    padding:14px 18px;
+  }
+
+  /* section */
+  .sec{margin-top:36px}
+  .sec-head{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+  .step{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;
+    font-size:13px;font-weight:900;display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;box-shadow:0 0 14px rgba(99,102,241,.5)}
+  .sec-title{font-size:19px;font-weight:900;color:var(--text);flex:1}
+  .sec-hint{font-size:13px;color:var(--text-muted);margin-bottom:14px;line-height:1.5}
+
+  /* creatures */
+  .clist{display:flex;flex-direction:column;gap:11px}
+  .cc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+    padding:16px;animation:slideIn .22s ease;transition:border-color .2s}
+  .cc:focus-within{border-color:var(--border-hi)}
+  @keyframes slideIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+  .cc-head{display:flex;align-items:center;gap:8px;margin-bottom:13px}
+  .cnum{width:26px;height:26px;border-radius:7px;background:var(--accent-dim);
+    border:1px solid var(--accent-border);color:var(--violet);
+    font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .clabel{font-size:13px;font-weight:700;color:var(--text-muted);flex:1}
+  .rm-btn{background:none;border:none;color:var(--text-dim);cursor:pointer;
+    font-size:16px;padding:3px 7px;border-radius:5px;transition:color .18s;line-height:1}
+  .rm-btn:hover{color:var(--danger)}
+  .fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:480px){.fields{grid-template-columns:1fr}}
+  .fg{display:flex;flex-direction:column;gap:5px}
+  .fg label{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em}
+  .fg input[type=text]{
+    background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);
+    padding:9px 12px;color:var(--text);font-family:var(--font);font-size:14px;font-weight:600;
+    transition:border-color .18s;width:100%;
+  }
+  .fg input[type=text]:focus{outline:none;border-color:var(--border-hi)}
+  .fg input[type=text]::placeholder{color:var(--text-dim)}
+  .fg-file{grid-column:1/-1}
+  .file-wrap{display:flex;align-items:center;background:var(--surface2);
+    border:1px solid var(--border);border-radius:var(--rs);overflow:hidden;transition:border-color .18s}
+  .file-wrap:focus-within{border-color:var(--border-hi)}
+  .file-wrap input{background:none;border:none;flex:1;padding:9px 12px;
+    color:var(--text);font-family:var(--mono);font-size:13px;min-width:0}
+  .file-wrap input:focus{outline:none}
+  .file-wrap input::placeholder{color:var(--text-dim);font-family:var(--mono)}
+  .file-ext{padding:9px 12px 9px 0;color:var(--violet);font-family:var(--mono);font-size:13px;flex-shrink:0}
+  .add-btn{width:100%;margin-top:12px;padding:13px;background:none;
+    border:1.5px dashed var(--border);border-radius:var(--r);color:var(--violet);
+    font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;transition:all .2s}
+  .add-btn:hover:not(:disabled){border-color:var(--accent);background:var(--accent-dim)}
+  .add-btn:disabled{opacity:.35;cursor:not-allowed}
+
+  /* background presets */
+  .bg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+  @media(max-width:420px){.bg-grid{grid-template-columns:repeat(2,1fr)}}
+  .bp{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);
+    padding:12px 8px 10px;text-align:center;cursor:pointer;transition:all .18s}
+  .bp:hover{border-color:var(--violet);background:var(--accent-dim)}
+  .bp.on{border-color:var(--accent);background:var(--accent-dim)}
+  .bp-img{display:block;width:100%;max-width:96px;margin:0 auto 8px;border-radius:6px;overflow:hidden}
+  .bp-img svg{display:block;width:100%;height:auto}
+  .bp-label{font-size:12px;font-weight:700;color:var(--text-muted)}
+  .bg-extra{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+  .bg-extra textarea{width:100%;background:none;border:none;
+    padding:13px 15px;color:var(--text);font-family:var(--font);
+    font-size:14px;font-weight:600;resize:vertical;min-height:72px;display:block}
+  .bg-extra textarea:focus{outline:none}
+  .bg-extra textarea::placeholder{color:var(--text-dim)}
+
+  /* prompt output */
+  .prompt-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+  .prompt-bar{
+    display:flex;align-items:center;
+    padding:10px 14px;border-bottom:1px solid var(--border);gap:8px;
+  }
+  .dots{display:flex;gap:5px;flex-shrink:0}
+  .dot-r{width:9px;height:9px;border-radius:50%;background:#f87171}
+  .dot-y{width:9px;height:9px;border-radius:50%;background:#fbbf24}
+  .dot-g{width:9px;height:9px;border-radius:50%;background:#34d399}
+  .prompt-bar-lbl{font-size:11px;font-weight:700;color:var(--text-muted);
+    text-transform:uppercase;letter-spacing:.07em;flex:1}
+
+  /* reset button — shown only when user edited manually */
+  .reset-btn{
+    display:none;align-items:center;gap:5px;
+    background:none;border:1px solid var(--border);border-radius:20px;
+    color:var(--text-muted);font-family:var(--font);font-size:11px;font-weight:700;
+    padding:3px 10px;cursor:pointer;transition:all .18s;white-space:nowrap;flex-shrink:0;
+  }
+  .reset-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .reset-btn.show{display:flex}
+
+  /* editable prompt textarea */
+  .prompt-body{
+    display:block;width:100%;
+    padding:16px;
+    font-family:var(--mono);font-size:13px;line-height:1.75;
+    color:var(--text);background:none;border:none;
+    resize:vertical;min-height:200px;
+    white-space:pre;word-break:break-word;
+  }
+  .prompt-body:focus{outline:none}
+  .prompt-body.empty{color:var(--text-dim);font-style:italic}
+
+  .copy-btn{
+    display:flex;align-items:center;justify-content:center;gap:9px;
+    width:100%;margin-top:12px;padding:16px;
+    background:var(--accent);border:none;border-radius:var(--r);
+    color:#fff;font-family:var(--font);font-size:17px;font-weight:900;
+    cursor:pointer;transition:background .2s,transform .15s;letter-spacing:.01em;
+  }
+  .copy-btn:hover{background:#4f46e5}
+  .copy-btn:active{transform:scale(.98)}
+  .copy-btn.ok{background:var(--success);transform:scale(1.015)}
+  .copy-icon{display:flex;align-items:center;flex-shrink:0}
+
+  /* RTL */
+  [dir="rtl"] .sec-head,[dir="rtl"] .cc-head{flex-direction:row-reverse}
+  [dir="rtl"] .prompt-bar{flex-direction:row-reverse}
+  [dir="rtl"] .prompt-bar-lbl{text-align:left}
+  [dir="rtl"] .prompt-body{direction:rtl;text-align:right}
+  [dir="rtl"] .file-ext{padding:9px 0 9px 12px}
+  [dir="rtl"] .file-wrap input{padding:9px 12px}
+
+  @media(prefers-reduced-motion:reduce){.cc{animation:none}.header-badge .dot{animation:none}}
+</style>
+
+<div class="lang-bar" id="langBar"></div>
+
+<div class="wrap">
+  <header class="header">
+    <svg class="header-ship" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <ellipse cx="30" cy="48" rx="12" ry="5" fill="#6366f1" opacity=".3"/>
+      <ellipse cx="30" cy="50" rx="6" ry="3" fill="#22d3ee" opacity=".45"/>
+      <path d="M15 34 L2 43 L15 41Z" fill="#4338ca"/>
+      <path d="M45 34 L58 43 L45 41Z" fill="#4338ca"/>
+      <ellipse cx="30" cy="27" rx="15" ry="11" fill="#6366f1"/>
+      <path d="M23 23 L30 8 L37 23Z" fill="#818cf8"/>
+      <ellipse cx="30" cy="24" rx="9" ry="7" fill="#4f46e5"/>
+      <ellipse cx="29" cy="22" rx="5.5" ry="4.5" fill="#22d3ee" opacity=".45"/>
+      <ellipse cx="28" cy="21" rx="3" ry="2.5" fill="#e0f2fe" opacity=".35"/>
+      <rect x="22" y="38" width="6" height="6" rx="2" fill="#4338ca"/>
+      <rect x="32" y="38" width="6" height="6" rx="2" fill="#4338ca"/>
+    </svg>
+    <div class="header-badge"><span class="dot"></span><span id="hBadge"></span></div>
+    <h1 id="hTitle"></h1>
+    <p class="narrative" id="hNarr"></p>
+  </header>
+
+  <section class="sec">
+    <div class="sec-head"><div class="step">1</div><h2 class="sec-title" id="s1Title"></h2></div>
+    <p class="sec-hint" id="s1Hint"></p>
+    <div class="clist" id="cList"></div>
+    <button class="add-btn" id="addBtn" onclick="addC()"></button>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head"><div class="step">2</div><h2 class="sec-title" id="s2Title"></h2></div>
+    <p class="sec-hint" id="s2Hint"></p>
+    <div class="bg-grid" id="bgGrid"></div>
+    <div class="bg-extra" id="bgExtra" style="display:none">
+      <textarea id="bgTxt" rows="3" oninput="go()"></textarea>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head"><div class="step">3</div><h2 class="sec-title" id="s3Title"></h2></div>
+    <div class="prompt-box">
+      <div class="prompt-bar">
+        <div class="dots"><div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div></div>
+        <span class="prompt-bar-lbl" id="s3Hint"></span>
+        <button class="reset-btn" id="resetBtn" onclick="resetPrompt()">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <path d="M10.5 2A5 5 0 1 0 11 6"/>
+            <path d="M9 0 L11 2 L9 4"/>
+          </svg>
+          <span id="resetTxt"></span>
+        </button>
+      </div>
+      <textarea class="prompt-body" id="promptBody" spellcheck="false"></textarea>
+    </div>
+    <button class="copy-btn" id="copyBtn" onclick="doCopy()">
+      <span class="copy-icon" id="copyIcon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="7" y="7" width="10" height="12" rx="2"/>
+          <path d="M13 7V5a2 2 0 00-2-2H5a2 2 0 00-2 2v9a2 2 0 002 2h2"/>
+        </svg>
+      </span>
+      <span id="copyTxt"></span>
+    </button>
+  </section>
+</div>
+
+<script>
+// ── SVG thumbnails ─────────────────────────────────────────────
+const BG_SVG = {
+  stars:`<svg viewBox="0 0 96 64" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="96" height="64" fill="#070b14"/><circle cx="12" cy="10" r="2" fill="white" opacity=".7"/><circle cx="42" cy="7" r="1.5" fill="white" opacity=".9"/><circle cx="74" cy="14" r="2.5" fill="white" opacity=".5"/><circle cx="20" cy="30" r="1.5" fill="white" opacity=".4"/><circle cx="60" cy="22" r="3" fill="#a78bfa" opacity=".75"/><circle cx="85" cy="38" r="2" fill="white" opacity=".5"/><circle cx="10" cy="50" r="1.5" fill="white" opacity=".6"/><circle cx="50" cy="54" r="2" fill="#6366f1" opacity=".9"/><circle cx="82" cy="56" r="1.5" fill="white" opacity=".4"/><circle cx="33" cy="46" r="1.5" fill="white" opacity=".35"/></svg>`,
+
+  forest:`<svg viewBox="0 0 96 64" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="96" height="64" fill="#06160c"/><rect x="0" y="48" width="96" height="16" fill="#041009"/><ellipse cx="48" cy="60" rx="60" ry="14" fill="#0a2014" opacity=".8"/><polygon points="6,64 14,40 22,64" fill="#0a2814"/><polygon points="72,64 82,38 90,64" fill="#0a2814"/><polygon points="50,64 58,42 66,64" fill="#0c2e18"/><polygon points="48,4 66,32 30,32" fill="#124a20"/><polygon points="48,16 64,38 32,38" fill="#176228"/><rect x="44" y="38" width="8" height="26" rx="2" fill="#0b2614"/><polygon points="48,0 44,30 52,30" fill="#d1fae5" opacity=".06"/><ellipse cx="20" cy="60" rx="16" ry="5" fill="#0f3018" opacity=".7"/><ellipse cx="76" cy="60" rx="16" ry="5" fill="#0f3018" opacity=".7"/></svg>`,
+
+  ocean:`<svg viewBox="0 0 96 64" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="96" height="64" fill="#020c24"/><rect x="0" y="32" width="96" height="32" fill="#040f2e"/><path d="M0 36 C16 28 32 44 48 36 C64 28 80 44 96 36 L96 64 L0 64Z" fill="#071a4a"/><path d="M0 46 C14 38 30 52 46 46 C62 40 78 52 96 46 L96 64 L0 64Z" fill="#0b2460"/><circle cx="18" cy="28" r="3.5" fill="none" stroke="#22d3ee" stroke-width="1.2" opacity=".5"/><circle cx="64" cy="22" r="2.5" fill="none" stroke="#22d3ee" stroke-width="1" opacity=".4"/><circle cx="40" cy="38" r="2" fill="none" stroke="#67e8f9" stroke-width="1" opacity=".35"/><polygon points="30,0 26,32 34,32" fill="#67e8f9" opacity=".04"/></svg>`,
+
+  crystal:`<svg viewBox="0 0 96 64" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="96" height="64" fill="#0c0820"/><ellipse cx="48" cy="68" rx="50" ry="14" fill="#4c1d95" opacity=".25"/><polygon points="18,64 10,30 20,16 30,30 26,64" fill="#3b0764"/><polygon points="20,16 30,30 26,64 24,64" fill="#6d28d9" opacity=".75"/><polygon points="10,64 5,42 14,32 18,42 16,64" fill="#2e1065" opacity=".9"/><polygon points="76,64 68,28 78,14 88,28 84,64" fill="#4c1d95"/><polygon points="78,14 88,28 84,64 82,64" fill="#7c3aed" opacity=".75"/><polygon points="80,64 85,42 90,34 94,42 92,64" fill="#3b0764" opacity=".8"/><polygon points="50,64 45,44 50,34 55,44 53,64" fill="#5b21b6" opacity=".9"/><circle cx="20" cy="15" r="3.5" fill="#e9d5ff" opacity=".95"/><circle cx="78" cy="13" r="3" fill="#f5f3ff" opacity=".9"/><line x1="20" y1="10" x2="20" y2="4" stroke="#e9d5ff" stroke-width="1" opacity=".5"/><line x1="17" y1="15" x2="11" y2="15" stroke="#e9d5ff" stroke-width="1" opacity=".5"/></svg>`,
+
+  gears:`<svg viewBox="0 0 96 64" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="96" height="64" fill="#080c0e"/><circle cx="36" cy="38" r="22" fill="#111518" stroke="#2a3340" stroke-width="5"/><circle cx="36" cy="38" r="10" fill="#080c0e" stroke="#1e2630" stroke-width="2"/><rect x="29" y="12" width="14" height="8" rx="2" fill="#2a3340"/><rect x="29" y="56" width="14" height="8" rx="2" fill="#2a3340"/><rect x="9" y="31" width="8" height="14" rx="2" fill="#2a3340"/><rect x="55" y="31" width="8" height="14" rx="2" fill="#2a3340"/><rect x="14" y="18" width="8" height="10" rx="2" fill="#2a3340" transform="rotate(-45 18 23)"/><rect x="52" y="18" width="8" height="10" rx="2" fill="#2a3340" transform="rotate(45 56 23)"/><rect x="14" y="44" width="8" height="10" rx="2" fill="#2a3340" transform="rotate(45 18 49)"/><rect x="52" y="44" width="8" height="10" rx="2" fill="#2a3340" transform="rotate(-45 56 49)"/><circle cx="74" cy="22" r="14" fill="#111518" stroke="#323d4d" stroke-width="4"/><circle cx="74" cy="22" r="6" fill="#080c0e" stroke="#1e2630" stroke-width="1.5"/><rect x="68" y="5" width="12" height="6" rx="1.5" fill="#323d4d"/><rect x="68" y="33" width="12" height="6" rx="1.5" fill="#323d4d"/><rect x="56" y="16" width="6" height="12" rx="1.5" fill="#323d4d"/><rect x="84" y="16" width="6" height="12" rx="1.5" fill="#323d4d"/></svg>`,
+
+  custom:`<svg viewBox="0 0 96 64" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="96" height="64" fill="#111827"/><line x1="14" y1="14" x2="82" y2="14" stroke="#1f2937" stroke-width="2" stroke-linecap="round"/><line x1="14" y1="26" x2="82" y2="26" stroke="#1f2937" stroke-width="2" stroke-linecap="round"/><line x1="14" y1="38" x2="82" y2="38" stroke="#1f2937" stroke-width="2" stroke-linecap="round"/><line x1="14" y1="50" x2="58" y2="50" stroke="#1f2937" stroke-width="2" stroke-linecap="round"/><g transform="translate(70,8) rotate(30)"><rect x="-5" y="0" width="10" height="30" rx="2.5" fill="#6366f1"/><rect x="-5" y="-8" width="10" height="10" rx="2" fill="#c4b5fd"/><polygon points="-5,30 5,30 0,40" fill="#fbbf24"/><polygon points="-2,33 2,33 0,40" fill="#fef3c7"/></g><rect x="14" y="46" width="3" height="10" rx="1" fill="#6366f1" opacity=".8"/></svg>`,
+};
+
+// ── Transliterator ─────────────────────────────────────────────
+function slug(s){
+  const m={'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'yo','ж':'zh','з':'z','и':'i','й':'y','к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f','х':'kh','ц':'ts','ч':'ch','ш':'sh','щ':'shch','ъ':'','ы':'y','ь':'','э':'e','ю':'yu','я':'ya',' ':'_','-':'_'};
+  return(s||'').toLowerCase().split('').map(c=>m[c]??(/[a-z0-9]/.test(c)?c:'')).join('').replace(/_{2,}/g,'_').replace(/^_|_$/g,'')||'creature';
+}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+// ── Language data ──────────────────────────────────────────────
+const BG_IDS=['stars','forest','ocean','crystal','gears','custom'];
+
+const T={
+  RU:{dir:'ltr',lang:'ru',
+    badge:'Система восстановления досье',title:'Восстановление беглецов',
+    narr:'База данных Совета повреждена. Заполни досье — Aiko восстановит галерею с игрой памяти.',
+    s1:'Досье существ',s1h:'Опиши каждого беглеца. Имя файла подберётся автоматически, можно изменить.',
+    s2:'Фон галереи',s2h:'Выбери оформление фона — Aiko применит этот стиль в HTML-странице.',
+    s3:'Промпт для Aiko',s3h:'Редактируй прямо здесь',
+    copy:'Скопировать промпт',copied:'Скопировано!',reset:'Сбросить',
+    empty:'Заполни хотя бы одного беглеца — промпт появится здесь',
+    cLbl:n=>`Беглец ${n}`,nameLbl:'Имя',traitLbl:'Черта',fileLbl:'Имя файла',
+    namePh:'напр: Зубрик',traitPh:'напр: любопытный и добрый',filePh:'напр: zubrik',
+    addBtn:'+ Добавить существо',custPh:'Опиши фон галереи...',
+    bgs:[{l:'Звёздное небо',d:'тёмный космос с мерцающими звёздами и туманностями'},{l:'Тёмный лес',d:'тёмный лес с лучами света между деревьями'},{l:'Морские глубины',d:'тёмное море с пузырями и отражениями света'},{l:'Кристальная пещера',d:'фиолетовые кристаллы в тёмной пещере'},{l:'Механический мир',d:'металлические шестерни на тёмном фоне'},{l:'Своё',d:''}],
+    win:'Все беглецы пойманы!',
+    prompt(cs,bgDesc){
+      const n=cs.filter(c=>c.n).length;
+      const list=cs.filter(c=>c.n).map((c,i)=>`${i+1}. ${c.n} — ${c.t||'...'} (файл: ${c.f||slug(c.n)}.png)`).join('\n');
+      return`Создай HTML-страницу «Галерея беглецов» с двумя блоками.
+
+БЛОК 1 — ГАЛЕРЕЯ
+Существа (PNG-файлы уже загружены в Files):
+${list}
+
+Карточки в ряд, 3–4 в строке, адаптивно. Каждая: картинка сверху, имя жирным, черта мелким текстом, цветная рамка. Фон страницы — ${bgDesc}. Шрифт Nunito, тёмная тема.
+
+БЛОК 2 — ИГРА «НАЙДИ ПАРУ»
+${n} пар карточек, перемешанных случайно. Рубашка — cover.png из Files. CSS 3D-переворот при клике. Две открытые: совпали — исчезают плавно; не совпали — закрываются через 1 сек. Все найдены — сообщение «Все беглецы пойманы!».`;
+    }},
+
+  EN:{dir:'ltr',lang:'en',
+    badge:'Dossier Recovery System',title:'Fugitive Dossier',
+    narr:'Council database compromised. Fill in the dossier — Aiko will reconstruct the gallery with the memory game.',
+    s1:'Creature Dossier',s1h:'Describe each fugitive. The filename is auto-generated, but you can edit it.',
+    s2:'Gallery Background',s2h:'Choose the background style — Aiko will apply it to the HTML page.',
+    s3:'Prompt for Aiko',s3h:'Edit right here',
+    copy:'Copy prompt',copied:'Copied!',reset:'Reset',
+    empty:'Add at least one creature — the prompt will appear here',
+    cLbl:n=>`Creature ${n}`,nameLbl:'Name',traitLbl:'Trait',fileLbl:'Filename',
+    namePh:'e.g.: Zubrik',traitPh:'e.g.: curious and kind',filePh:'e.g.: zubrik',
+    addBtn:'+ Add creature',custPh:'Describe the gallery background...',
+    bgs:[{l:'Starfield',d:'dark cosmos with twinkling stars and nebulae'},{l:'Dark forest',d:'dark forest with light beams filtering through trees'},{l:'Deep ocean',d:'dark sea with bubbles and light reflections'},{l:'Crystal cave',d:'purple crystals glowing in a dark cave'},{l:'Mechanical world',d:'metal gears on a dark background'},{l:'Custom',d:''}],
+    win:'All fugitives caught!',
+    prompt(cs,bgDesc){
+      const n=cs.filter(c=>c.n).length;
+      const list=cs.filter(c=>c.n).map((c,i)=>`${i+1}. ${c.n} — ${c.t||'...'} (file: ${c.f||slug(c.n)}.png)`).join('\n');
+      return`Create an HTML page "Fugitive Gallery" with two sections.
+
+SECTION 1 — GALLERY
+Creatures (PNG files already uploaded to Files):
+${list}
+
+Cards in a row, 3–4 per line, responsive. Each card: image on top, name in bold, trait in small text, colored border. Page background — ${bgDesc}. Nunito font, dark theme.
+
+SECTION 2 — MEMORY GAME
+${n} shuffled pairs. Card back — cover.png from Files. CSS 3D flip on click. Two open cards: match — fade out smoothly; no match — flip back after 1 sec. All found — message "All fugitives caught!".`;
+    }},
+
+  ES:{dir:'ltr',lang:'es',
+    badge:'Sistema de recuperación',title:'Dosier de fugitivos',
+    narr:'Base de datos del Consejo dañada. Completa el dosier — Aiko reconstruirá la galería con el juego.',
+    s1:'Dosier de criaturas',s1h:'Describe cada fugitivo. El nombre de archivo se genera automáticamente.',
+    s2:'Fondo de la galería',s2h:'Elige el estilo de fondo — Aiko lo aplicará en la página HTML.',
+    s3:'Prompt para Aiko',s3h:'Edita directamente aquí',
+    copy:'Copiar prompt',copied:'¡Copiado!',reset:'Resetear',
+    empty:'Agrega al menos una criatura — el prompt aparecerá aquí',
+    cLbl:n=>`Criatura ${n}`,nameLbl:'Nombre',traitLbl:'Rasgo',fileLbl:'Nombre de archivo',
+    namePh:'ej.: Zubrik',traitPh:'ej.: curioso y amable',filePh:'ej.: zubrik',
+    addBtn:'+ Añadir criatura',custPh:'Describe el fondo de la galería...',
+    bgs:[{l:'Cosmos',d:'cosmos oscuro con estrellas brillantes y nebulosas'},{l:'Bosque oscuro',d:'bosque oscuro con rayos de luz entre árboles'},{l:'Océano profundo',d:'mar oscuro con burbujas y reflejos de luz'},{l:'Cueva cristal',d:'cristales morados brillando en una cueva oscura'},{l:'Mundo mecánico',d:'engranajes metálicos en fondo oscuro'},{l:'Personalizado',d:''}],
+    win:'¡Todos los fugitivos capturados!',
+    prompt(cs,bgDesc){
+      const n=cs.filter(c=>c.n).length;
+      const list=cs.filter(c=>c.n).map((c,i)=>`${i+1}. ${c.n} — ${c.t||'...'} (archivo: ${c.f||slug(c.n)}.png)`).join('\n');
+      return`Crea una página HTML "Galería de fugitivos" con dos secciones.\n\nSECCIÓN 1 — GALERÍA\nCriaturas (archivos PNG en Files):\n${list}\n\nTarjetas en fila, 3–4 por línea, responsive. Cada una: imagen arriba, nombre en negrita, rasgo en texto pequeño, borde de color. Fondo — ${bgDesc}. Fuente Nunito, tema oscuro.\n\nSECCIÓN 2 — JUEGO DE MEMORIA\n${n} pares mezclados. Reverso — cover.png de Files. Volteo 3D con CSS al clic. Dos abiertas: coinciden — desaparecen; no coinciden — se cierran tras 1 seg. Todas encontradas — mensaje "${this.win}".`;
+    }},
+
+  ID:{dir:'ltr',lang:'id',
+    badge:'Sistem Pemulihan Dossier',title:'Dossier Makhluk Buron',
+    narr:'Database Dewan rusak. Isi dossier — Aiko akan merekonstruksi galeri dan permainan memori.',
+    s1:'Dossier Makhluk',s1h:'Deskripsikan setiap makhluk buron. Nama file dibuat otomatis.',
+    s2:'Latar Galeri',s2h:'Pilih gaya latar belakang — Aiko akan menerapkannya di halaman HTML.',
+    s3:'Prompt untuk Aiko',s3h:'Edit langsung di sini',
+    copy:'Salin prompt',copied:'Disalin!',reset:'Reset',
+    empty:'Tambahkan setidaknya satu makhluk — prompt akan muncul di sini',
+    cLbl:n=>`Makhluk ${n}`,nameLbl:'Nama',traitLbl:'Sifat',fileLbl:'Nama file',
+    namePh:'mis.: Zubrik',traitPh:'mis.: penasaran dan baik',filePh:'mis.: zubrik',
+    addBtn:'+ Tambah makhluk',custPh:'Gambarkan latar belakang galeri...',
+    bgs:[{l:'Bintang',d:'kosmos gelap dengan bintang berkelip dan nebula'},{l:'Hutan gelap',d:'hutan gelap dengan sinar cahaya menembus pepohonan'},{l:'Samudra',d:'laut gelap dengan gelembung dan pantulan cahaya'},{l:'Gua Kristal',d:'kristal ungu bercahaya di gua gelap'},{l:'Mekanik',d:'roda gigi logam di latar gelap'},{l:'Kustom',d:''}],
+    win:'Semua makhluk tertangkap!',
+    prompt(cs,bgDesc){
+      const n=cs.filter(c=>c.n).length;
+      const list=cs.filter(c=>c.n).map((c,i)=>`${i+1}. ${c.n} — ${c.t||'...'} (file: ${c.f||slug(c.n)}.png)`).join('\n');
+      return`Buat halaman HTML "Galeri Makhluk Buron" dengan dua bagian.\n\nBAGIAN 1 — GALERI\nMakhluk (file PNG di Files):\n${list}\n\nKartu berjajar, 3–4 per baris, responsif. Setiap kartu: gambar atas, nama tebal, sifat kecil, border berwarna. Latar — ${bgDesc}. Font Nunito, tema gelap.\n\nBAGIAN 2 — PERMAINAN MEMORI\n${n} pasang diacak. Belakang — cover.png dari Files. Balik 3D CSS saat diklik. Dua terbuka: cocok — menghilang perlahan; tidak — tertutup setelah 1 detik. Semua ditemukan — pesan "${this.win}".`;
+    }},
+
+  IT:{dir:'ltr',lang:'it',
+    badge:'Sistema di recupero dossier',title:'Dossier creature',
+    narr:"Database del Consiglio danneggiato. Compila il dossier — Aiko ricostruirà la galleria con il gioco.",
+    s1:'Dossier creature',s1h:'Descrivi ogni creatura. Il nome file viene generato automaticamente.',
+    s2:'Sfondo galleria',s2h:"Scegli lo stile dello sfondo — Aiko lo applicherà alla pagina HTML.",
+    s3:'Prompt per Aiko',s3h:'Modifica direttamente qui',
+    copy:'Copia prompt',copied:'Copiato!',reset:'Resetta',
+    empty:'Aggiungi almeno una creatura — il prompt apparirà qui',
+    cLbl:n=>`Creatura ${n}`,nameLbl:'Nome',traitLbl:'Caratteristica',fileLbl:'Nome file',
+    namePh:'es.: Zubrik',traitPh:'es.: curioso e gentile',filePh:'es.: zubrik',
+    addBtn:'+ Aggiungi creatura',custPh:'Descrivi lo sfondo della galleria...',
+    bgs:[{l:'Cosmo',d:'cosmo buio con stelle scintillanti e nebulose'},{l:'Foresta scura',d:'foresta buia con raggi di luce tra gli alberi'},{l:'Oceano profondo',d:'mare buio con bolle e riflessi di luce'},{l:'Grotta cristallo',d:'cristalli viola luminosi in una grotta buia'},{l:'Mondo meccanico',d:'ingranaggi metallici su sfondo scuro'},{l:'Personalizzato',d:''}],
+    win:'Tutte le creature catturate!',
+    prompt(cs,bgDesc){
+      const n=cs.filter(c=>c.n).length;
+      const list=cs.filter(c=>c.n).map((c,i)=>`${i+1}. ${c.n} — ${c.t||'...'} (file: ${c.f||slug(c.n)}.png)`).join('\n');
+      return`Crea una pagina HTML "Galleria Creature" con due sezioni.\n\nSEZIONE 1 — GALLERIA\nCreature (file PNG in Files):\n${list}\n\nSchede in fila, 3–4 per riga, responsive. Ogni scheda: immagine in alto, nome in grassetto, caratteristica piccola, bordo colorato. Sfondo — ${bgDesc}. Font Nunito, tema scuro.\n\nSEZIONE 2 — GIOCO DELLA MEMORIA\n${n} coppie mescolate. Retro — cover.png da Files. Flip 3D CSS al clic. Due aperte: coincidono — svaniscono; no — si chiudono dopo 1 sec. Tutte trovate — messaggio "${this.win}".`;
+    }},
+
+  TR:{dir:'ltr',lang:'tr',
+    badge:'Dosya Kurtarma Sistemi',title:'Kaçak Dosyası',
+    narr:'Konsey veri tabanı hasar gördü. Dosyayı doldur — Aiko galeriyi ve oyunu yeniden oluşturacak.',
+    s1:'Yaratık Dosyaları',s1h:'Her kaçak yaratığı tanımla. Dosya adı otomatik oluşturulur.',
+    s2:'Galeri Arka Planı',s2h:"Arka plan stilini seç — Aiko HTML sayfasına uygulayacak.",
+    s3:'Aiko için Prompt',s3h:'Doğrudan burada düzenle',
+    copy:'Promptu kopyala',copied:'Kopyalandı!',reset:'Sıfırla',
+    empty:'En az bir yaratık ekle — prompt burada görünecek',
+    cLbl:n=>`Yaratık ${n}`,nameLbl:'Ad',traitLbl:'Özellik',fileLbl:'Dosya adı',
+    namePh:'ör.: Zubrik',traitPh:'ör.: meraklı ve iyi kalpli',filePh:'ör.: zubrik',
+    addBtn:'+ Yaratık ekle',custPh:'Galeri arka planını açıkla...',
+    bgs:[{l:'Yıldızlar',d:'pırıldayan yıldızlar ve bulutsuluklarla dolu karanlık uzay'},{l:'Karanlık orman',d:'ağaçlardan süzülen ışıkla karanlık orman'},{l:'Okyanus',d:'kabarcıklar ve ışık yansımalarıyla karanlık deniz'},{l:'Kristal Mağara',d:'karanlık mağarada parlayan mor kristaller'},{l:'Mekanik Dünya',d:'karanlık arka planda metal dişliler'},{l:'Özel',d:''}],
+    win:'Tüm kaçaklar yakalandı!',
+    prompt(cs,bgDesc){
+      const n=cs.filter(c=>c.n).length;
+      const list=cs.filter(c=>c.n).map((c,i)=>`${i+1}. ${c.n} — ${c.t||'...'} (dosya: ${c.f||slug(c.n)}.png)`).join('\n');
+      return`"Kaçak Galerisi" HTML sayfasını iki bölümle oluştur.\n\nBÖLÜM 1 — GALERİ\nYaratıklar (PNG dosyaları Files'ta):\n${list}\n\nSatırda 3–4 kart, responsive. Her kart: üstte resim, kalın ad, küçük özellik, renkli kenarlık. Arka plan — ${bgDesc}. Nunito yazı tipi, koyu tema.\n\nBÖLÜM 2 — HAFIZA OYUNU\n${n} çift karıştırılmış. Kart arkası — Files'taki cover.png. Tıklamada CSS 3D çevirme. İki açık: eşleşti — yavaşça kayboluyor; eşleşmedi — 1 saniye sonra kapanıyor. Tümü bulununca — "${this.win}" mesajı.`;
+    }},
+
+  PL:{dir:'ltr',lang:'pl',
+    badge:'System odzyskiwania akt',title:'Akta zbiegów',
+    narr:'Baza danych Rady uszkodzona. Wypełnij akta — Aiko odtworzy galerię z grą pamięciową.',
+    s1:'Akta stworzeń',s1h:'Opisz każdego zbiega. Nazwa pliku generuje się automatycznie.',
+    s2:'Tło galerii',s2h:'Wybierz styl tła — Aiko zastosuje go na stronie HTML.',
+    s3:'Prompt dla Aiko',s3h:'Edytuj bezpośrednio tutaj',
+    copy:'Skopiuj prompt',copied:'Skopiowano!',reset:'Resetuj',
+    empty:'Dodaj co najmniej jedno stworzenie — prompt pojawi się tutaj',
+    cLbl:n=>`Stworzenie ${n}`,nameLbl:'Imię',traitLbl:'Cecha',fileLbl:'Nazwa pliku',
+    namePh:'np.: Zubrik',traitPh:'np.: ciekawy i miły',filePh:'np.: zubrik',
+    addBtn:'+ Dodaj stworzenie',custPh:'Opisz tło galerii...',
+    bgs:[{l:'Kosmos',d:'ciemny kosmos z migoczącymi gwiazdami i mgławicami'},{l:'Ciemny las',d:'ciemny las ze smugami światła między drzewami'},{l:'Ocean',d:'ciemne morze z bąbelkami i refleksami światła'},{l:'Jaskinia kryształów',d:'fioletowe kryształy świecące w ciemnej jaskini'},{l:'Świat mechaniczny',d:'metalowe tryby na ciemnym tle'},{l:'Własny',d:''}],
+    win:'Wszystkie stworzenia schwytane!',
+    prompt(cs,bgDesc){
+      const n=cs.filter(c=>c.n).length;
+      const list=cs.filter(c=>c.n).map((c,i)=>`${i+1}. ${c.n} — ${c.t||'...'} (plik: ${c.f||slug(c.n)}.png)`).join('\n');
+      return`Utwórz stronę HTML "Galeria Zbiegów" z dwiema sekcjami.\n\nSEKCJA 1 — GALERIA\nStworzenia (pliki PNG w Files):\n${list}\n\nKarty w rzędzie, 3–4 na linię, responsive. Każda: zdjęcie na górze, imię pogrubione, cecha małym tekstem, kolorowe obramowanie. Tło — ${bgDesc}. Czcionka Nunito, ciemny motyw.\n\nSEKCJA 2 — GRA PAMIĘCIOWA\n${n} par przetasowanych. Rewers — cover.png z Files. Obrót 3D CSS przy kliknięciu. Dwie otwarte: pasują — znikają płynnie; nie pasują — zamykają się po 1 sek. Wszystkie znalezione — komunikat "${this.win}".`;
+    }},
+
+  PT:{dir:'ltr',lang:'pt',
+    badge:'Sistema de recuperação',title:'Dossiê de fugitivos',
+    narr:'Banco de dados do Conselho danificado. Preencha o dossiê — Aiko reconstruirá a galeria com o jogo.',
+    s1:'Dossiê de criaturas',s1h:'Descreva cada fugitivo. O nome do arquivo é gerado automaticamente.',
+    s2:'Fundo da galeria',s2h:'Escolha o estilo de fundo — Aiko aplicará na página HTML.',
+    s3:'Prompt para Aiko',s3h:'Edite diretamente aqui',
+    copy:'Copiar prompt',copied:'Copiado!',reset:'Resetar',
+    empty:'Adicione pelo menos uma criatura — o prompt aparecerá aqui',
+    cLbl:n=>`Criatura ${n}`,nameLbl:'Nome',traitLbl:'Característica',fileLbl:'Nome do arquivo',
+    namePh:'ex.: Zubrik',traitPh:'ex.: curioso e gentil',filePh:'ex.: zubrik',
+    addBtn:'+ Adicionar criatura',custPh:'Descreva o fundo da galeria...',
+    bgs:[{l:'Cosmos',d:'cosmos escuro com estrelas cintilantes e nebulosas'},{l:'Floresta escura',d:'floresta escura com raios de luz entre as árvores'},{l:'Oceano profundo',d:'mar escuro com bolhas e reflexos de luz'},{l:'Gruta cristal',d:'cristais roxos brilhando em uma caverna escura'},{l:'Mundo mecânico',d:'engrenagens metálicas em fundo escuro'},{l:'Personalizado',d:''}],
+    win:'Todos os fugitivos capturados!',
+    prompt(cs,bgDesc){
+      const n=cs.filter(c=>c.n).length;
+      const list=cs.filter(c=>c.n).map((c,i)=>`${i+1}. ${c.n} — ${c.t||'...'} (arquivo: ${c.f||slug(c.n)}.png)`).join('\n');
+      return`Crie uma página HTML "Galeria de Fugitivos" com duas seções.\n\nSEÇÃO 1 — GALERIA\nCriaturas (arquivos PNG em Files):\n${list}\n\nCartões em fila, 3–4 por linha, responsivo. Cada um: imagem no topo, nome em negrito, característica em texto pequeno, borda colorida. Fundo — ${bgDesc}. Fonte Nunito, tema escuro.\n\nSEÇÃO 2 — JOGO DA MEMÓRIA\n${n} pares embaralhados. Verso — cover.png de Files. Flip 3D CSS ao clicar. Duas abertas: coincidem — desaparecem suavemente; não — fecham após 1 seg. Todas encontradas — mensagem "${this.win}".`;
+    }},
+
+  AR:{dir:'rtl',lang:'ar',
+    badge:'نظام استعادة الملفات',title:'ملف المخلوقات الهاربة',
+    narr:'قاعدة بيانات المجلس تالفة. أكمل الملف — ستعيد Aiko بناء المعرض ولعبة الذاكرة.',
+    s1:'ملفات المخلوقات',s1h:'صف كل مخلوق هارب. يُنشأ اسم الملف تلقائياً ويمكن تغييره.',
+    s2:'خلفية المعرض',s2h:'اختر نمط الخلفية — ستطبّقه Aiko على صفحة HTML.',
+    s3:'الموجّه لـ Aiko',s3h:'عدّله مباشرةً هنا',
+    copy:'نسخ الموجّه',copied:'تم النسخ!',reset:'إعادة تعيين',
+    empty:'أضف مخلوقاً واحداً على الأقل — سيظهر الموجّه هنا',
+    cLbl:n=>`مخلوق ${n}`,nameLbl:'الاسم',traitLbl:'الصفة',fileLbl:'اسم الملف',
+    namePh:'مثال: Zubrik',traitPh:'مثال: فضولي وطيب',filePh:'مثال: zubrik',
+    addBtn:'+ إضافة مخلوق',custPh:'صف خلفية المعرض...',
+    bgs:[{l:'فضاء مرصّع',d:'كون مظلم بنجوم متلألئة وسدم'},{l:'غابة مظلمة',d:'غابة مظلمة مع أشعة ضوء تتسرب بين الأشجار'},{l:'أعماق المحيط',d:'بحر مظلم مع فقاعات وانعكاسات ضوئية'},{l:'كهف الكريستال',d:'كريستالات بنفسجية مضيئة في كهف مظلم'},{l:'العالم الميكانيكي',d:'تروس معدنية على خلفية مظلمة'},{l:'مخصص',d:''}],
+    win:'جميع الهاربين أُمسكوا!',
+    prompt(cs,bgDesc){
+      const n=cs.filter(c=>c.n).length;
+      const list=cs.filter(c=>c.n).map((c,i)=>`${i+1}. ${c.n} — ${c.t||'...'} (ملف: ${c.f||slug(c.n)}.png)`).join('\n');
+      return`أنشئ صفحة HTML "معرض الهاربين" بقسمين.\n\nالقسم 1 — المعرض\nالمخلوقات (ملفات PNG في Files):\n${list}\n\nبطاقات في صف، 3–4 لكل سطر، متجاوبة. كل بطاقة: صورة في الأعلى، اسم بخط عريض، صفة بخط صغير، حد ملون. الخلفية — ${bgDesc}. خط Nunito، نمط داكن.\n\nالقسم 2 — لعبة الذاكرة\n${n} أزواج مختلطة. ظهر البطاقة — cover.png من Files. قلب ثلاثي الأبعاد بـ CSS عند النقر. بطاقتان مفتوحتان: تطابقتا — تختفيان تدريجياً؛ لا — تُغلقان بعد ثانية. كل الأزواج مكتملة — رسالة "${this.win}".`;
+    }},
+};
+
+const LANG_ORDER=['RU','EN','ES','ID','IT','TR','PL','PT','AR'];
+
+// ── State ──────────────────────────────────────────────────────
+let st={lang:'RU',creatures:[{n:'',t:'',f:'',auto:true}],bg:'stars',custText:''};
+let userEdited=false;
+
+// ── Lang ───────────────────────────────────────────────────────
+function setLang(l){
+  st.lang=l;
+  document.documentElement.lang=T[l].lang;
+  document.documentElement.dir=T[l].dir;
+  renderAll();
+}
+
+// ── Render all ─────────────────────────────────────────────────
+function renderAll(){
+  const t=T[st.lang];
+  document.getElementById('langBar').innerHTML=
+    LANG_ORDER.map(l=>`<button class="lb${l===st.lang?' on':''}" onclick="setLang('${l}')">${l}</button>`).join('');
+  document.getElementById('hBadge').textContent=t.badge;
+  document.getElementById('hTitle').textContent=t.title;
+  document.getElementById('hNarr').textContent=t.narr;
+  document.getElementById('s1Title').textContent=t.s1;
+  document.getElementById('s1Hint').textContent=t.s1h;
+  document.getElementById('s2Title').textContent=t.s2;
+  document.getElementById('s2Hint').textContent=t.s2h;
+  document.getElementById('s3Title').textContent=t.s3;
+  document.getElementById('s3Hint').textContent=t.s3h;
+  document.getElementById('copyTxt').textContent=t.copy;
+  document.getElementById('resetTxt').textContent=t.reset;
+  renderCreatures();renderBg();go();
+}
+
+function renderCreatures(){
+  const t=T[st.lang];
+  document.getElementById('cList').innerHTML=st.creatures.map((c,i)=>`
+    <div class="cc">
+      <div class="cc-head">
+        <div class="cnum">${i+1}</div>
+        <div class="clabel">${t.cLbl(i+1)}</div>
+        ${st.creatures.length>1?`<button class="rm-btn" onclick="rmC(${i})">&#10005;</button>`:''}
+      </div>
+      <div class="fields">
+        <div class="fg"><label>${t.nameLbl}</label>
+          <input type="text" placeholder="${esc(t.namePh)}" value="${esc(c.n)}" oninput="upC(${i},'n',this.value)"></div>
+        <div class="fg"><label>${t.traitLbl}</label>
+          <input type="text" placeholder="${esc(t.traitPh)}" value="${esc(c.t)}" oninput="upC(${i},'t',this.value)"></div>
+        <div class="fg fg-file"><label>${t.fileLbl}</label>
+          <div class="file-wrap">
+            <input type="text" id="fi${i}" placeholder="${esc(t.filePh)}" value="${esc(c.f)}" oninput="upFile(${i},this.value)">
+            <span class="file-ext">.png</span>
+          </div></div>
+      </div>
+    </div>`).join('');
+  const ab=document.getElementById('addBtn');
+  ab.textContent=t.addBtn;ab.disabled=st.creatures.length>=5;
+}
+
+function renderBg(){
+  const t=T[st.lang];
+  document.getElementById('bgGrid').innerHTML=BG_IDS.map((id,i)=>`
+    <button class="bp${st.bg===id?' on':''}" onclick="setBg('${id}')">
+      <span class="bp-img">${BG_SVG[id]}</span>
+      <span class="bp-label">${esc(t.bgs[i].l)}</span>
+    </button>`).join('');
+  const ex=document.getElementById('bgExtra');
+  if(st.bg==='custom'){
+    ex.style.display='block';
+    const ta=ex.querySelector('textarea');
+    ta.placeholder=T[st.lang].custPh;ta.value=st.custText;
+  }else{ex.style.display='none';}
+}
+
+// ── Handlers ───────────────────────────────────────────────────
+function upC(i,k,v){
+  st.creatures[i][k]=v;
+  if(k==='n'&&st.creatures[i].auto){
+    const s=slug(v);st.creatures[i].f=s;
+    const el=document.getElementById(`fi${i}`);if(el)el.value=s;
+  }
+  userEdited=false; // form changed → auto-regenerate
+  showReset(false);
+  go();
+}
+function upFile(i,v){st.creatures[i].f=v;st.creatures[i].auto=false;go();}
+function addC(){if(st.creatures.length<5){st.creatures.push({n:'',t:'',f:'',auto:true});renderCreatures();go();}}
+function rmC(i){st.creatures.splice(i,1);renderCreatures();go();}
+function setBg(id){st.bg=id;renderBg();userEdited=false;showReset(false);go();}
+
+// ── Prompt generation ──────────────────────────────────────────
+function go(){
+  if(st.bg==='custom'){const ta=document.querySelector('#bgExtra textarea');if(ta)st.custText=ta.value;}
+  if(userEdited)return; // don't overwrite manual edits
+  const t=T[st.lang];
+  const valid=st.creatures.filter(c=>c.n.trim());
+  const body=document.getElementById('promptBody');
+  if(!valid.length){
+    body.value=t.empty;body.classList.add('empty');return;
+  }
+  body.classList.remove('empty');
+  const bgDesc=st.bg==='custom'
+    ?(st.custText.trim()||'...')
+    :(t.bgs[BG_IDS.indexOf(st.bg)]?.d||'');
+  const cs=st.creatures.map(c=>({...c,f:c.f.trim()||slug(c.n)}));
+  body.value=t.prompt(cs,bgDesc);
+}
+
+function showReset(show){
+  const btn=document.getElementById('resetBtn');
+  btn.classList.toggle('show',show);
+}
+
+function resetPrompt(){
+  userEdited=false;showReset(false);go();
+}
+
+// ── Copy ───────────────────────────────────────────────────────
+const ICON_CLIP=`<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="10" height="12" rx="2"/><path d="M13 7V5a2 2 0 00-2-2H5a2 2 0 00-2 2v9a2 2 0 002 2h2"/></svg>`;
+const ICON_CHECK=`<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l5 5 9-9"/></svg>`;
+
+function doCopy(){
+  const body=document.getElementById('promptBody');
+  const txt=body.value;
+  const t=T[st.lang];
+  if(!txt||txt===t.empty)return;
+  navigator.clipboard.writeText(txt).then(()=>{
+    const btn=document.getElementById('copyBtn');
+    const icon=document.getElementById('copyIcon');
+    const lbl=document.getElementById('copyTxt');
+    btn.classList.add('ok');icon.innerHTML=ICON_CHECK;lbl.textContent=t.copied;
+    setTimeout(()=>{btn.classList.remove('ok');icon.innerHTML=ICON_CLIP;lbl.textContent=t.copy;},2200);
+  });
+}
+
+// ── Manual edit listener ───────────────────────────────────────
+document.getElementById('promptBody').addEventListener('input',()=>{
+  userEdited=true;showReset(true);
+  document.getElementById('promptBody').classList.remove('empty');
+});
+
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter')doCopy();});
+
+renderAll();
+</script>
