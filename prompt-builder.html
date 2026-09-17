@@ -26,30 +26,27 @@
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   body{font-family:var(--font);background:#050a18;color:var(--text);min-height:100vh;padding-bottom:64px}
 
-  /* ── Fixed background with blur/fog ── */
+  /* ── Fixed background ── */
   #bg-layer{
     position:fixed;inset:-80px;z-index:0;will-change:transform;
-    background:
-      radial-gradient(ellipse 90% 70% at 20% 30%,rgba(79,70,229,.6) 0%,transparent 60%),
-      radial-gradient(ellipse 70% 55% at 78% 68%,rgba(124,58,237,.45) 0%,transparent 58%),
-      radial-gradient(ellipse 55% 45% at 58% 15%,rgba(34,211,238,.22) 0%,transparent 52%),
-      radial-gradient(ellipse 45% 40% at 38% 80%,rgba(167,139,250,.32) 0%,transparent 50%),
-      radial-gradient(ellipse 35% 30% at 88% 28%,rgba(99,102,241,.28) 0%,transparent 45%),
-      radial-gradient(ellipse 25% 20% at 12% 65%,rgba(196,181,253,.18) 0%,transparent 40%),
-      #040817;
-    filter:blur(44px) brightness(.8);
+    background:#040817;
+    filter:blur(48px) brightness(.75);
+    overflow:hidden;
+  }
+  /* sharp star layer — NOT blurred */
+  #bg-stars{
+    position:fixed;inset:0;z-index:1;pointer-events:none;
   }
   #bg-fog{
-    position:fixed;inset:0;z-index:1;pointer-events:none;
+    position:fixed;inset:0;z-index:2;pointer-events:none;
     background:
-      radial-gradient(ellipse 140% 60% at 50% -10%,rgba(5,10,24,.55) 0%,transparent 55%),
-      radial-gradient(ellipse 140% 60% at 50% 110%,rgba(5,10,24,.7) 0%,transparent 55%),
-      radial-gradient(ellipse 60% 50% at 0% 50%,rgba(5,10,24,.35) 0%,transparent 50%),
-      radial-gradient(ellipse 60% 50% at 100% 50%,rgba(5,10,24,.35) 0%,transparent 50%),
-      rgba(5,10,24,.18);
+      radial-gradient(ellipse 130% 55% at 50% -5%,rgba(4,8,23,.6) 0%,transparent 52%),
+      radial-gradient(ellipse 130% 55% at 50% 105%,rgba(4,8,23,.75) 0%,transparent 52%),
+      radial-gradient(ellipse 50% 100% at 0% 50%,rgba(4,8,23,.3) 0%,transparent 45%),
+      radial-gradient(ellipse 50% 100% at 100% 50%,rgba(4,8,23,.3) 0%,transparent 45%);
   }
 
-  .wrap{position:relative;max-width:700px;margin:0 auto;padding:0 16px;z-index:2}
+  .wrap{position:relative;max-width:860px;margin:0 auto;padding:0 20px;z-index:3}
 
   /* lang bar */
   .lang-bar{
@@ -63,9 +60,23 @@
   .lb:hover{border-color:var(--violet);color:var(--violet)}
   .lb.on{background:var(--accent);border-color:var(--accent);color:#fff}
 
+  /* header */
+  .header{text-align:center;padding:40px 0 30px}
+  .header h1{
+    font-size:clamp(30px,6vw,46px);font-weight:900;letter-spacing:-.03em;line-height:1.05;
+    background:linear-gradient(135deg,#818cf8 0%,#c4b5fd 45%,#67e8f9 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    margin-bottom:14px;text-wrap:balance;
+  }
+  .narrative{
+    font-size:15px;font-weight:500;color:var(--text-muted);line-height:1.7;
+    max-width:480px;margin:0 auto;
+    background:rgba(11,22,40,.55);border:1px solid var(--border);border-radius:var(--r);
+    padding:13px 20px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  }
+
   /* section */
-  .sec{margin-top:28px}
-  .sec:first-child{margin-top:20px}
+  .sec{margin-top:30px}
   .sec-head{display:flex;align-items:center;gap:10px;margin-bottom:16px}
   .step{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;
     font-size:13px;font-weight:900;display:flex;align-items:center;justify-content:center;
@@ -215,12 +226,85 @@
   @media(prefers-reduced-motion:reduce){.cc{animation:none}.header-badge .dot{animation:none}}
 </style>
 
-<div id="bg-layer"></div>
+<div id="bg-layer">
+  <!-- blurred nebula shapes -->
+  <svg width="100%" height="100%" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="280" cy="320" r="220" fill="rgba(79,70,229,.58)"/>
+    <circle cx="280" cy="320" r="90" fill="rgba(129,140,248,.65)"/>
+    <circle cx="1160" cy="580" r="190" fill="rgba(124,58,237,.48)"/>
+    <circle cx="1160" cy="580" r="70" fill="rgba(167,139,250,.6)"/>
+    <circle cx="720" cy="130" r="160" fill="rgba(34,211,238,.26)"/>
+    <circle cx="460" cy="720" r="150" fill="rgba(167,139,250,.38)"/>
+    <circle cx="460" cy="720" r="55" fill="rgba(196,181,253,.5)"/>
+    <circle cx="1080" cy="200" r="110" fill="rgba(99,102,241,.32)"/>
+    <circle cx="140" cy="640" r="120" fill="rgba(196,181,253,.22)"/>
+    <circle cx="900" cy="420" r="80" fill="rgba(34,211,238,.18)"/>
+    <ellipse cx="600" cy="450" rx="340" ry="200" fill="rgba(67,56,202,.15)"/>
+  </svg>
+</div>
+
+<div id="bg-stars">
+  <!-- sharp stars visible above the blur -->
+  <svg width="100%" height="100%" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="72" cy="55" r="1" fill="white" opacity=".75"/>
+    <circle cx="195" cy="28" r="1.5" fill="white" opacity=".85"/>
+    <circle cx="380" cy="42" r="1" fill="#c4b5fd" opacity=".7"/>
+    <circle cx="610" cy="18" r="1" fill="white" opacity=".6"/>
+    <circle cx="820" cy="55" r="1.5" fill="white" opacity=".8"/>
+    <circle cx="1040" cy="30" r="1" fill="#a5f3fc" opacity=".65"/>
+    <circle cx="1280" cy="48" r="1" fill="white" opacity=".7"/>
+    <circle cx="1400" cy="80" r="1.5" fill="white" opacity=".5"/>
+    <circle cx="55" cy="180" r="1" fill="white" opacity=".5"/>
+    <circle cx="310" cy="145" r="1.5" fill="#a78bfa" opacity=".9"/>
+    <circle cx="540" cy="170" r="1" fill="white" opacity=".55"/>
+    <circle cx="760" cy="130" r="2" fill="white" opacity=".4"/>
+    <circle cx="990" cy="155" r="1" fill="white" opacity=".7"/>
+    <circle cx="1200" cy="140" r="1.5" fill="#c4b5fd" opacity=".6"/>
+    <circle cx="1380" cy="190" r="1" fill="white" opacity=".5"/>
+    <circle cx="130" cy="310" r="1.5" fill="white" opacity=".45"/>
+    <circle cx="420" cy="280" r="1" fill="white" opacity=".6"/>
+    <circle cx="670" cy="300" r="1.5" fill="#a5f3fc" opacity=".55"/>
+    <circle cx="900" cy="270" r="1" fill="white" opacity=".5"/>
+    <circle cx="1130" cy="295" r="1" fill="white" opacity=".65"/>
+    <circle cx="1340" cy="320" r="1.5" fill="white" opacity=".45"/>
+    <circle cx="80" cy="440" r="1" fill="white" opacity=".5"/>
+    <circle cx="350" cy="420" r="1.5" fill="#818cf8" opacity=".7"/>
+    <circle cx="600" cy="455" r="1" fill="white" opacity=".4"/>
+    <circle cx="850" cy="410" r="1" fill="white" opacity=".55"/>
+    <circle cx="1100" cy="440" r="1.5" fill="white" opacity=".5"/>
+    <circle cx="1390" cy="430" r="1" fill="#c4b5fd" opacity=".6"/>
+    <circle cx="200" cy="570" r="1" fill="white" opacity=".45"/>
+    <circle cx="480" cy="555" r="1.5" fill="white" opacity=".6"/>
+    <circle cx="730" cy="590" r="1" fill="#a5f3fc" opacity=".5"/>
+    <circle cx="970" cy="560" r="1" fill="white" opacity=".55"/>
+    <circle cx="1250" cy="580" r="1.5" fill="white" opacity=".4"/>
+    <circle cx="40" cy="700" r="1" fill="white" opacity=".4"/>
+    <circle cx="290" cy="685" r="1" fill="#a78bfa" opacity=".65"/>
+    <circle cx="560" cy="710" r="1.5" fill="white" opacity=".45"/>
+    <circle cx="800" cy="695" r="1" fill="white" opacity=".5"/>
+    <circle cx="1050" cy="720" r="1" fill="white" opacity=".4"/>
+    <circle cx="1320" cy="700" r="1.5" fill="white" opacity=".45"/>
+    <circle cx="170" cy="820" r="1" fill="white" opacity=".35"/>
+    <circle cx="450" cy="840" r="1.5" fill="#c4b5fd" opacity=".5"/>
+    <circle cx="700" cy="825" r="1" fill="white" opacity=".4"/>
+    <circle cx="950" cy="850" r="1" fill="white" opacity=".35"/>
+    <circle cx="1180" cy="830" r="1.5" fill="white" opacity=".4"/>
+    <!-- 4-point star accents -->
+    <path d="M1350 260 L1351.5 264 L1355.5 265.5 L1351.5 267 L1350 271 L1348.5 267 L1344.5 265.5 L1348.5 264Z" fill="white" opacity=".7"/>
+    <path d="M185 95 L186 98 L189 99 L186 100 L185 103 L184 100 L181 99 L184 98Z" fill="#e0e7ff" opacity=".8"/>
+    <path d="M880 340 L881 343 L884 344 L881 345 L880 348 L879 345 L876 344 L879 343Z" fill="white" opacity=".55"/>
+  </svg>
+</div>
+
 <div id="bg-fog"></div>
 
 <div class="lang-bar" id="langBar"></div>
 
 <div class="wrap">
+  <header class="header">
+    <h1 id="hTitle"></h1>
+    <p class="narrative" id="hNarr"></p>
+  </header>
 
   <section class="sec">
     <div class="sec-head"><div class="step">1</div><h2 class="sec-title" id="s1Title"></h2></div>
@@ -647,6 +731,8 @@ function renderAll(){
   const t=T[st.lang];
   document.getElementById('langBar').innerHTML=
     LANG_ORDER.map(l=>`<button class="lb${l===st.lang?' on':''}" onclick="setLang('${l}')">${l}</button>`).join('');
+  document.getElementById('hTitle').textContent=t.title;
+  document.getElementById('hNarr').textContent=t.narr;
   document.getElementById('s1Title').textContent=t.s1;
   document.getElementById('s1Hint').textContent=t.s1h;
   document.getElementById('s2Title').textContent=t.s2;
